@@ -1,0 +1,23 @@
+//copy FixVersion from issue to sub-task during sub-task creation
+
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.issue.IssueManager
+import com.atlassian.jira.component.ComponentAccessor
+import org.apache.log4j.Level
+import org.apache.log4j.Logger
+
+Logger log = Logger.getLogger("Fix Versions copy")
+log.setLevel(Level.DEBUG);
+IssueManager issueManager = ComponentAccessor.getIssueManager()
+def issueid = getFieldById("parentIssueId").value
+Issue issue = issueManager.getIssueObject(Long.parseLong(issueid))
+
+def fixVersions = issue.getFixVersions()
+log.debug(issue)
+log.debug(fixVersions)
+
+
+if (fixVersions.size() > 0) {
+    def fldFixVersion = getFieldById("fixVersions")
+    fldFixVersion.setFormValue(fixVersions*.id)
+}
